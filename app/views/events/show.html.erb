@@ -1,0 +1,31 @@
+<h1><%= @event.title =%></h1>
+
+<p><%= @event.description =%></p>
+
+<ul>
+<% if current_user.id == @event.creator_id %>
+  <li>
+    <%=link_to "Edit", edit_event_path(@event)%>
+  </li>
+  <li>
+  <li>
+    <%=link_to "Destroy", event_path(@event), data: {
+      turbo_method: :delete,
+      turbo_confirm: "Are you sure?"
+    } %>
+  </li>
+<% end %>
+<h2>Attending</h2>
+<% if @event.attendees.nil? %>
+<p>Current No Attendees</p>
+<% else %>
+<ul>
+<% @event.attendees.each do |attendee| %>
+<li><%= User.find(attendee.id).email %></li>
+<% end %>
+</ul>
+<% end %>
+  <li>
+    <%=link_to "Home", events_path %>
+  </li>
+</ul>
