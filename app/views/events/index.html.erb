@@ -1,8 +1,8 @@
 <div id="events">
   <h1>All Events</h1>
-  <div class="d-flex gap-4">
+  <div class="d-flex flex-wrap gap-2">
     <% @events.each do |event| %>
-        <%= render 'shared/event_card', event: event, attendance_record: @attendance_record%>
+      <%= render 'shared/event_card', event: event, all_attendance_records: @all_attendance_records, new_attendance_record: @new_attendance_record%>
     <% end %>
   </div>
 </div>

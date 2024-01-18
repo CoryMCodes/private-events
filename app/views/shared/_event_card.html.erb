@@ -1,19 +1,31 @@
-  <div class="card" style="width: 18rem;">
-  <div class="card-body">
-    <h5 class="card-title"><%= event.title %></h5>
-    <h6 class="card-subtitle mb-2 text-muted"><%= event.time%></h6>
-    <h6 class="card-subtitle mb-2 text-muted"><%= event.location %></h6>
-    <p class="card-text"><%= event.description %></p>
-    <p><%= p event.attendees.count %></p>
-     <%=link_to "View Details", event_path(event.id), :class => 'card-link' %>
-     <% if current_user %>
-     <%= form_with model: @attendance_record do |form| %>
-        <%= form.hidden_field :attendee_id, value: current_user.id %>
-        <%= form.hidden_field :attended_event_id, value: event.id %>
-        <%= form.submit "Attend", class: "btn btn-primary" %>
+<%# Dynamic Card Styling %>
+<% @card_classes = "card border border-4" %>
+<% if user_signed_in? then @card_classes = "card border border-primary border-4" end%>
+  <% if user_signed_in? && current_user.id.to_i == event.creator_id.to_i then @card_classes = "card border border-success border-4" end%>
+    <div class="<%=@card_classes%> " style="width: 300px">
+      <div class="card-body">
+        <h5 class="card-title"><%= event.title %></h5>
+        <h6 class="card-subtitle mb-2 text-muted"><%= event.time%></h6>
+        <h6 class="card-subtitle mb-2 text-muted"><%= event.location %></h6>
+        <p class="card-text"><%= event.description %></p>
+        <p>Number of Guests: <%= p event.attendees.count %></p>
+      </div>
+      <% if user_signed_in? %>
+        <div class="d-flex gap-2 card-footer">
+          <%=link_to "View Details", event_path(event.id), :class => 'btn btn-secondary' %>
+          <% if !(current_user.id.to_i == event.creator_id.to_i) && !event.attendees.includes(User.find(current_user.id)).exists? %>
+            <%= form_with model: @new_attendance_record do |form| %>
+              <%= form.hidden_field :attendee_id, value: current_user.id %>
+              <%= form.hidden_field :attended_event_id, value: event.id %>
+              <%= form.submit "Attend", class: "btn btn-primary" %>
+            <% end %>
+          <% elsif  !event.attendees.where(:id => current_user.id).first.nil? %>
+            <%= link_to "Cancel RSVP", attendance_record_path(@all_attendance_records.where(:event_id => event.id, :user_id => current_user.id).first[:id]),
+      data: {
+      turbo_method: :delete,
+      turbo_confirm: "Are you sure?"
+    }, class: "btn btn-danger" %>
+          <% end %>
+        </div>
       <% end %>
-      
-  <%= event.attendees.include?(user_id: current_user.id) %>
-     <% end %>
-  </div>
-</div>
+    </div>

@@ -3,11 +3,13 @@ class EventsController < ApplicationController
  
   def index
     @events = Event.all
-    @attendance_record = AttendanceRecord.new
+    @all_attendance_records = AttendanceRecord.all
+    @new_attendance_record = AttendanceRecord.new
   end
 
   def show
     @event = Event.find(params[:id])
+ 
   end
   
   def new
