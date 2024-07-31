@@ -5,6 +5,7 @@ class AttendanceRecordsController < ApplicationController
  
   def create
     @attendance_record = AttendanceRecord.new(attendance_record_params)
+    @test = "test"
     @attendance_record.user_id = current_user.id.to_i
     @attendance_record.event_id = attendance_record_params[:attended_event_id]
     if @attendance_record.save
